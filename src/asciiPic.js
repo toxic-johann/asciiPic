@@ -31,22 +31,22 @@
         let sum = arr.reduce((prev,next)=>{
           return prev+next;
         });
-        return sum/arr.length;
+          let ans  = sum/arr.length;
+        return ans;
       };
 
       // 粒子化结果
       this._particlize = (arr,parlen,width,height)=>{
         let newOne = [];
-        let startTime = Date.now();
         arr = this._liftDimension(arr,width);
-        startTime = Date.now();
+          let temp  = arr[0].length;
         for(let row=0;row<arr.length;row+=parlen){
           for(let col=0;col<arr[row].length;col+=parlen){
             let tmp=[];
             for(let r=0;r<parlen;r++){
               for(let c=0;c<parlen;c++){
                 if(arr[row+r]){
-                  if(arr[row+r][col+c]){
+                  if(arr[row+r][col+c] || arr[row+r][col+c] == 0){
                     tmp.push(arr[row+r][col+c]);
                   }
                 }
@@ -54,8 +54,7 @@
             }
             if(tmp.length >0){
               newOne.push(map[~~this._getParticle(tmp)]);
-            }
-            
+            } 
           }
           newOne.push("\r\n");
         }
@@ -79,34 +78,62 @@
       // 图片ascii码化
       this.ascii = (particle,canvas,img)=>{
         let context;
-        if (canvas.getContext) {
-          context = canvas.getContext('2d');
-        } else {
-          throw new Error("你的canvas真麻烦");
-        }
-        let iWidth = img.width;
-        let iHeight = img.height
-          context.clearRect(0, 0,iWidth, iHeight);
-        canvas.width = iWidth;
-        canvas.height = iHeight;
-        context.drawImage(img, 0, 0); // 设置对应的图像对象，以及它在画布上的位置
-
-        // 提取灰度数据
-        let imageData = context.getImageData(0, 0, iWidth, iHeight);
-        let pixels = imageData.data;
-        let alevel = [];
-        for(let i=0;i<pixels.length;i+=4){
-          // let tmp = pixels[i]+pixels[i+1]+pixels[i+2];
-          let tmp = ~~(pixels[i]*0.3+pixels[i+1]* 0.59+pixels[i+2]*0.11);
-          // ~~ (R * 0.3 + G * 0.59 + B * 0.11);
-          alevel.push(tmp);
-          
-        }
-
-        // 获取粒子化后的数据
-        let blevel = this._particlize(alevel,particle,iWidth,iHeight);
-        return blevel.join("");
+      if (canvas.getContext) {
+        context = canvas.getContext('2d');
+      } else {
+        throw new Error("你的canvas真麻烦");
       }
+      let iWidth = img.width;
+      let iHeight = img.height
+        context.clearRect(0, 0,iWidth, iHeight);
+      canvas.width = iWidth;
+      canvas.height = iHeight;
+      context.drawImage(img, 0, 0); // 设置对应的图像对象，以及它在画布上的位置
+
+      // 提取灰度数据
+      let imageData = context.getImageData(0, 0, iWidth, iHeight);
+      let pixels = imageData.data;
+      let alevel = [];
+      for(let i=0;i<pixels.length;i+=4){
+        // let tmp = pixels[i]+pixels[i+1]+pixels[i+2];
+        let tmp = ~~(pixels[i]*0.3+pixels[i+1]* 0.59+pixels[i+2]*0.11);
+        // ~~ (R * 0.3 + G * 0.59 + B * 0.11);
+        alevel.push(tmp);
+        
+      }
+
+      // 获取粒子化后的数据
+      let blevel = this._particlize(alevel,particle,iWidth,iHeight);
+
+      return blevel.join("");
+      };
+
+      this.asciiFromCanvas = (particle,canvas)=>{
+          let context;
+          if (canvas.getContext) {
+            context = canvas.getContext('2d');
+          } else {
+            throw new Error("你的canvas真麻烦");
+          }
+          let iWidth =canvas.width;
+          let iHeight = canvas.height
+
+          // 提取灰度数据
+          let imageData = context.getImageData(0, 0, iWidth, iHeight);
+          let pixels = imageData.data;
+          let alevel = [];
+          for(let i=0;i<pixels.length;i+=4){
+            // let tmp = pixels[i]+pixels[i+1]+pixels[i+2];
+            let tmp = ~~(pixels[i]*0.3+pixels[i+1]* 0.59+pixels[i+2]*0.11);
+            // ~~ (R * 0.3 + G * 0.59 + B * 0.11);
+            alevel.push(tmp);
+          };
+
+          // 获取粒子化后的数据
+          let blevel = this._particlize(alevel,particle,iWidth,iHeight);
+          return blevel.join("");
+      };
+
       let map = this._initCharMaps();
       return this;
   };
