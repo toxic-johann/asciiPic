@@ -37,22 +37,22 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       var sum = arr.reduce(function (prev, next) {
         return prev + next;
       });
-      return sum / arr.length;
+      var ans = sum / arr.length;
+      return ans;
     };
 
     // 粒子化结果
     this._particlize = function (arr, parlen, width, height) {
       var newOne = [];
-      var startTime = Date.now();
       arr = _this._liftDimension(arr, width);
-      startTime = Date.now();
+      var temp = arr[0].length;
       for (var row = 0; row < arr.length; row += parlen) {
         for (var col = 0; col < arr[row].length; col += parlen) {
           var tmp = [];
           for (var r = 0; r < parlen; r++) {
             for (var c = 0; c < parlen; c++) {
               if (arr[row + r]) {
-                if (arr[row + r][col + c]) {
+                if (arr[row + r][col + c] || arr[row + r][col + c] == 0) {
                   tmp.push(arr[row + r][col + c]);
                 }
               }
@@ -109,8 +109,36 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
       // 获取粒子化后的数据
       var blevel = _this._particlize(alevel, particle, iWidth, iHeight);
+
       return blevel.join("");
     };
+
+    this.asciiFromCanvas = function (particle, canvas) {
+      var context = undefined;
+      if (canvas.getContext) {
+        context = canvas.getContext('2d');
+      } else {
+        throw new Error("你的canvas真麻烦");
+      }
+      var iWidth = canvas.width;
+      var iHeight = canvas.height;
+
+      // 提取灰度数据
+      var imageData = context.getImageData(0, 0, iWidth, iHeight);
+      var pixels = imageData.data;
+      var alevel = [];
+      for (var i = 0; i < pixels.length; i += 4) {
+        // let tmp = pixels[i]+pixels[i+1]+pixels[i+2];
+        var tmp = ~ ~(pixels[i] * 0.3 + pixels[i + 1] * 0.59 + pixels[i + 2] * 0.11);
+        // ~~ (R * 0.3 + G * 0.59 + B * 0.11);
+        alevel.push(tmp);
+      };
+
+      // 获取粒子化后的数据
+      var blevel = _this._particlize(alevel, particle, iWidth, iHeight);
+      return blevel.join("");
+    };
+
     var map = this._initCharMaps();
     return this;
   };
