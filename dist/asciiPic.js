@@ -14,11 +14,12 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     root = root || window;
     root.AsciiPic = factory();
   }
-})(undefined, function ($) {
+})(undefined, function () {
   'use strict';
 
   function AsciiPic() {
-    var _this = this;
+    var _this = this,
+        _arguments = arguments;
 
     // 生成映射图
     this._initCharMaps = function () {
@@ -115,6 +116,8 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
     this.asciiFromCanvas = function (particle, canvas) {
       var context = undefined;
+      var self = _this;
+      particle = parseInt(particle);
       if (canvas.getContext) {
         context = canvas.getContext('2d');
       } else {
@@ -136,12 +139,74 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
       // 获取粒子化后的数据
       var blevel = _this._particlize(alevel, particle, iWidth, iHeight);
+      self.trigger("asciiedFromCanvas");
       return blevel.join("");
     };
 
+    // 生成uuid
+    this._guid = function () {
+      function S4() {
+        return ((1 + Math.random()) * 0x10000 | 0).toString(16).substring(1);
+      }
+      return S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4();
+    },
+    // 内置事件方法
+    // 绑定
+    this.on = function (type, listener) {
+      if (!type || !listener) {
+        throw new Error("事件绑定参数不全");
+        return;
+      }
+      var self = _this;
+      var id = self._guid();
+      var anEvent = {
+        type: type,
+        listener: listener,
+        id: self.id
+      };
+      if (!_events[type]) {
+        _events[type] = [anEvent];
+      } else {
+        _events[type].push(listener);
+      }
+      return id;
+    },
+    // 取消绑定
+    this.off = function (type, id) {
+      if (!type) {
+        throw new Error("事件解绑必须规定事件类型");
+        return;
+      }
+      if (!id) {
+        _events[type] = null;
+      } else {
+        _events[type] = _events[type].filter(function (each) {
+          if (each.id == id) {
+            return false;
+          }
+          return true;
+        });
+      };
+    },
+    // 触发
+    this.trigger = function (type) {
+      var self = _this;
+      if (!type) {
+        throw new Error("事件触发需申明事件类型");
+      }
+      if (!_events[type]) {
+        console.warn("该类型没有绑定事件");
+      }
+      var args = [].slice.call(_arguments, 1);
+      _events[type].forEach(function (each) {
+        each.listener.apply(self, args);
+      });
+    };
+
     var map = this._initCharMaps();
+    var _events = {};
     return this;
   };
-  //    暴露公共方法
-  return new AsciiPic();
+  // 暴露公共方法
+  return AsciiPic;
 });
