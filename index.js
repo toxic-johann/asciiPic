@@ -1,1 +1,2 @@
-require("./dist/asciiPic.js")
+var AsciiPic = require("./dist/asciiPic.js")
+module.exports = AsciiPic;
