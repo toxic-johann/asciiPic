@@ -1,0 +1,34 @@
+{
+  "name": "toxic-ascii-picture",
+  "version": "1.0.0",
+  "description": "generate ascii picture",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "browser-sync": "^2.11.2",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/toxic-johann/asciiPic.git"
+  },
+  "keywords": [
+    "to-xic",
+    "ascii",
+    "picture"
+  ],
+  "author": "to-xic",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/toxic-johann/asciiPic/issues"
+  },
+  "homepage": "https://github.com/toxic-johann/asciiPic#readme"
+}
