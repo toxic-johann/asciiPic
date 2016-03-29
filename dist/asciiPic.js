@@ -84,7 +84,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
     // 图片ascii码化
     this.ascii = function (particle, canvas, img) {
-      var context = undefined;
+      var context = void 0;
       if (canvas.getContext) {
         context = canvas.getContext('2d');
       } else {
@@ -115,7 +115,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     };
 
     this.asciiFromCanvas = function (particle, canvas) {
-      var context = undefined;
+      var context = void 0;
       var self = _this;
       particle = parseInt(particle);
       if (canvas.getContext) {
