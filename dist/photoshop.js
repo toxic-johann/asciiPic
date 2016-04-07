@@ -12,7 +12,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
     } else {
         // 浏览器全局变量(root 即 window)
         root = root || window;
-        root.photoshop = factory();
+        root.Photoshop = factory();
     }
 })(undefined, function () {
     'use strict';

@@ -8,7 +8,7 @@
     } else {
         // 浏览器全局变量(root 即 window)
         root = root || window;
-        root.photoshop = factory();
+        root.Photoshop = factory();
     }
 }(this, function () {
     'use strict'
