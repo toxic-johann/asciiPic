@@ -137,6 +137,29 @@
             return blevel.join("");
         };
 
+        this.asciiFromImagedata = (particle,imageData)=>{
+            let context;
+            let self = this;
+            particle = parseInt(particle)
+            let iWidth =imageData.width;
+            let iHeight = imageData.height
+
+            // 提取灰度数据
+            let pixels = imageData.data;
+            let alevel = [];
+            for(let i=0;i<pixels.length;i+=4){
+              // let tmp = pixels[i]+pixels[i+1]+pixels[i+2];
+              let tmp = ~~(pixels[i]*0.3+pixels[i+1]* 0.59+pixels[i+2]*0.11);
+              // ~~ (R * 0.3 + G * 0.59 + B * 0.11);
+              alevel.push(tmp);
+            };
+
+            // 获取粒子化后的数据
+            let blevel = this._particlize(alevel,particle,iWidth,iHeight);
+            self.trigger("asciiedFromImagedata");
+            return blevel.join("");
+        };
+
         // 生成uuid
         this._guid = ()=>{
             function S4() {
@@ -161,7 +184,7 @@
             if(!_events[type]){
                 _events[type] = [anEvent];
             } else {
-                _events[type].push(listener);
+                _events[type].push(anEvent);
             }
             return id;
         },
@@ -187,9 +210,11 @@
             let self = this;
             if(!type){
                 throw new Error("事件触发需申明事件类型");
+                return;
             }
             if(!_events[type]){
                 console.warn("该类型没有绑定事件");
+                return;
             }
             let args = [].slice.call(arguments,1);
             _events[type].forEach(each=>{

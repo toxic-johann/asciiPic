@@ -143,6 +143,29 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       return blevel.join("");
     };
 
+    this.asciiFromImagedata = function (particle, imageData) {
+      var context = void 0;
+      var self = _this;
+      particle = parseInt(particle);
+      var iWidth = imageData.width;
+      var iHeight = imageData.height;
+
+      // 提取灰度数据
+      var pixels = imageData.data;
+      var alevel = [];
+      for (var i = 0; i < pixels.length; i += 4) {
+        // let tmp = pixels[i]+pixels[i+1]+pixels[i+2];
+        var tmp = ~ ~(pixels[i] * 0.3 + pixels[i + 1] * 0.59 + pixels[i + 2] * 0.11);
+        // ~~ (R * 0.3 + G * 0.59 + B * 0.11);
+        alevel.push(tmp);
+      };
+
+      // 获取粒子化后的数据
+      var blevel = _this._particlize(alevel, particle, iWidth, iHeight);
+      self.trigger("asciiedFromImagedata");
+      return blevel.join("");
+    };
+
     // 生成uuid
     this._guid = function () {
       function S4() {
@@ -167,7 +190,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       if (!_events[type]) {
         _events[type] = [anEvent];
       } else {
-        _events[type].push(listener);
+        _events[type].push(anEvent);
       }
       return id;
     },
@@ -193,9 +216,11 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
       var self = _this;
       if (!type) {
         throw new Error("事件触发需申明事件类型");
+        return;
       }
       if (!_events[type]) {
         console.warn("该类型没有绑定事件");
+        return;
       }
       var args = [].slice.call(_arguments, 1);
       _events[type].forEach(function (each) {
