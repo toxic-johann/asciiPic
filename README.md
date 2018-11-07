@@ -1,5 +1,7 @@
 # asciiPic
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/toxic-johann/asciiPic.svg)](https://greenkeeper.io/)
+
 这个东西是用来把图片转换为用ascii码画成的字符画。
 
 clone后直接gulp，然后就可以观看示例。
